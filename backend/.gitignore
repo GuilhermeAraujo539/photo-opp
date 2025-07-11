@@ -1,0 +1,50 @@
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Environment variables
+.env
+!.env.example
+
+# Build outputs
+dist/
+build/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor settings
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Coverage reports
+coverage/
+.nyc_output/
+
+# Optional npm cache
+.npm/
+
+# TypeScript
+*.tsbuildinfo
+
+# Debug
+debug.log
+
+# Misc
+.env.local
+.env.*.local
