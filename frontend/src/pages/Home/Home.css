@@ -1,0 +1,22 @@
+.home-screen {
+    text-align: center;
+    min-height: 100vh;
+    max-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3rem 1rem;
+    box-sizing: border-box;
+}
+
+h1 {
+    font-size: 4.5rem;
+    font-weight: bold;
+    margin: 0;
+    line-height: 1.1;
+}
+
+.button:hover {
+    background-color: #333;
+}

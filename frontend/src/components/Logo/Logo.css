@@ -1,0 +1,7 @@
+.logo img {
+  width: 40vw;
+  max-width: 10rem;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}

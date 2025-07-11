@@ -1,0 +1,21 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: sans-serif;
+    background: #FFFFFF;
+    background: linear-gradient(140deg, rgba(255, 255, 255, 1) 50%, rgba(153, 153, 153, 1) 83%);
+}
