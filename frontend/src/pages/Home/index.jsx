@@ -1,7 +1,7 @@
 import React from "react";
-import "./Home.css";
-import Logo from "../../components/Logo/Logo";
-import Button from '../../components/Button/Button';
+import "./style.css";
+import Logo from "../../components/Logo/index.jsx";
+import Button from '../../components/Button/index.jsx';
 import { useNavigate } from "react-router-dom";
 
 export default function Home() {

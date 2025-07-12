@@ -1,0 +1,31 @@
+.button {
+  width: 100%;
+  max-width: 400px;
+  padding: 1rem 0;
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  cursor: pointer;
+  font-weight: bold;
+  box-sizing: border-box;
+  margin-top: 2vh;
+  transition: background-color 0.2s ease;
+}
+.button--default {
+  background-color: #606060;
+  color: white;
+  border: 3px solid #606060;
+}
+
+.button--default:hover {
+  background-color: #333;
+}
+
+
+.button--gray {
+  background-color: #60606000;
+  color: #666666;
+  border: 3px solid #606060;
+}
+
+.button--white:hover {
+  background-color: #f2f2f2;
+}

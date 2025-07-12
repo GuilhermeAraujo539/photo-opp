@@ -2,12 +2,14 @@ import React, {
   useRef,
   forwardRef,
   useImperativeHandle,
+  useState,
 } from "react";
 import Webcam from "react-webcam";
-import "./Webcam.css";
+import "./style.css";
 
 const WebcamCapture = forwardRef(({ onReady }, ref) => {
   const webcamRef = useRef(null);
+  const [videoReady, setVideoReady] = useState(false);
 
   const videoConstraints = {
     width: 1280,
@@ -16,22 +18,29 @@ const WebcamCapture = forwardRef(({ onReady }, ref) => {
   };
 
   useImperativeHandle(ref, () => ({
-    capture: () => {
-      return webcamRef.current?.getScreenshot() || null;
-    },
+    capture: () => webcamRef.current?.getScreenshot() || null,
   }));
 
+  const handleLoadedData = () => {
+    setVideoReady(true);
+    if (onReady) onReady();
+  };
+
   return (
-    <div className="camera">
+    <div className="camera" style={{ position: "relative" }}>
       <Webcam
         ref={webcamRef}
         audio={false}
         screenshotFormat="image/jpeg"
         videoConstraints={videoConstraints}
-        onUserMedia={() => {
-          if (onReady) onReady();
+        onLoadedData={handleLoadedData}
+        style={{
+          width: "100vw",
+          height: "100vh",
+          objectFit: "cover",
+          opacity: videoReady ? 1 : 0,
+          transition: "opacity 0.6s ease-in-out",
         }}
-        style={{ width: "100vw", height: "100vh", objectFit: "cover" }}
       />
     </div>
   );

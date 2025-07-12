@@ -48,3 +48,4 @@ debug.log
 # Misc
 .env.local
 .env.*.local
+/src/generated/prisma
