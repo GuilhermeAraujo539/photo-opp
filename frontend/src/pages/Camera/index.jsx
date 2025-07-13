@@ -13,52 +13,57 @@ export default function Camera() {
   const { setPicture } = usePicture();
   const navigate = useNavigate();
 
-  const [cameraPronta, setCameraPronta] = useState(false);
-  const [contagem, iniciarContagem] = useCountdown(3);
+  const [isCameraReady, setIsCameraReady] = useState(false);
+  const [countdown, startCountdown] = useCountdown(3);
 
-  const capturarImagem = () => {
-    const imagem = webcamRef.current?.capture();
-    if (imagem) {
-      setPicture(imagem);
+  function captureImage() {
+    const image = webcamRef.current?.capture();
+    if (image) {
+      setPicture(image);
       navigate("/preview");
     }
-  };
+  }
 
   useEffect(() => {
-    if (contagem === 0) {
-      capturarImagem();
+    if (countdown === 0) {
+      captureImage();
     }
-  }, [contagem]);
+  }, [countdown]);
 
-  const handleCameraPronta = () => setCameraPronta(true);
-  const handleCliqueCaptura = () => iniciarContagem();
+  function handleCameraReady() {
+    setIsCameraReady(true);
+  }
 
-  const deveExibirBotao = cameraPronta && contagem === null;
-  const deveExibirContagem = contagem !== null;
+  function handleCaptureClick() {
+    startCountdown();
+  }
+
+  const shouldShowButton = isCameraReady && countdown === null;
+  const shouldShowCountdown = countdown !== null;
 
   return (
     <div className="webcam-container">
       <WebcamCapture
         ref={webcamRef}
-        onReady={handleCameraPronta}
-        className={cameraPronta ? "fade-in" : ""}
+        onReady={handleCameraReady}
+        className={isCameraReady ? "fade-in" : ""}
       />
 
-      {!cameraPronta && (
+      {!isCameraReady && (
         <div className="overlay-loader">
           <Loader />
         </div>
       )}
 
-      {deveExibirBotao && (
-        <button className="capture-button" onClick={handleCliqueCaptura}>
+      {shouldShowButton && (
+        <button className="capture-button" onClick={handleCaptureClick}>
           <img src="/images/botao.png" alt="Botão de captura" />
         </button>
       )}
 
-      {deveExibirContagem && (
+      {shouldShowCountdown && (
         <div className="countdown-overlay">
-          <span>{contagem}</span>
+          <span>{countdown}</span>
         </div>
       )}
     </div>

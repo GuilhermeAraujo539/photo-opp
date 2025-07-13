@@ -8,9 +8,9 @@ import "./style.css";
 export default function Home() {
   const navigate = useNavigate();
 
-  const irParaCamera = () => {
+  function handleStart() {
     navigate("camera");
-  };
+  }
 
   return (
     <div className="home-screen">
@@ -24,7 +24,7 @@ export default function Home() {
         Opp
       </h1>
 
-      <Button onClick={irParaCamera}>
+      <Button onClick={handleStart}>
         Iniciar
       </Button>
     </div>

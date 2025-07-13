@@ -15,18 +15,18 @@ const videoConstraints = {
 
 const WebcamCapture = forwardRef(function WebcamCapture({ onReady }, ref) {
   const webcamRef = useRef(null);
-  const [videoPronto, setVideoPronto] = useState(false);
+  const [isVideoReady, setIsVideoReady] = useState(false);
 
   useImperativeHandle(ref, () => ({
-    capture: capturarImagem,
+    capture: captureImage,
   }));
 
-  function capturarImagem() {
+  function captureImage() {
     return webcamRef.current?.getScreenshot() || null;
   }
 
-  function aoCarregarVideo() {
-    setVideoPronto(true);
+  function handleVideoLoaded() {
+    setIsVideoReady(true);
     if (onReady) onReady();
   }
 
@@ -34,7 +34,7 @@ const WebcamCapture = forwardRef(function WebcamCapture({ onReady }, ref) {
     width: "100vw",
     height: "100vh",
     objectFit: "cover",
-    opacity: videoPronto ? 1 : 0,
+    opacity: isVideoReady ? 1 : 0,
     transition: "opacity 0.6s ease-in-out",
   };
 
@@ -45,7 +45,7 @@ const WebcamCapture = forwardRef(function WebcamCapture({ onReady }, ref) {
         audio={false}
         screenshotFormat="image/jpeg"
         videoConstraints={videoConstraints}
-        onLoadedData={aoCarregarVideo}
+        onLoadedData={handleVideoLoaded}
         style={webcamStyle}
       />
     </div>

@@ -1,54 +1,54 @@
 import React, { useEffect, useState, useCallback } from "react";
 import "./style.css";
 
-export default function PainelAdmin() {
-  const [fotos, setFotos] = useState([]);
-  const [carregando, setCarregando] = useState(true);
-  const [filtroData, setFiltroData] = useState("");
+export default function AdminPanel() {
+  const [pictures, setPictures] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [dateFilter, setDateFilter] = useState("");
 
   const baseUrl = import.meta.env.VITE_BACKEND_URL;
 
-  const buscarFotos = useCallback(async () => {
-    setCarregando(true);
+  const fetchPictures = useCallback(async () => {
+    setIsLoading(true);
     try {
-      const resposta = await fetch(`${baseUrl}/pictures`, {
+      const response = await fetch(`${baseUrl}/pictures`, {
         headers: {
           "ngrok-skip-browser-warning": "true",
           "Content-Type": "application/json",
         },
       });
 
-      const contentType = resposta.headers.get("content-type");
+      const contentType = response.headers.get("content-type");
       if (contentType && contentType.includes("application/json")) {
-        const dados = await resposta.json();
-        setFotos(dados);
+        const data = await response.json();
+        setPictures(data);
       } else {
-        const texto = await resposta.text();
-        console.error("Resposta não é JSON válida:", texto);
+        const text = await response.text();
+        console.error("Resposta não é JSON válida:", text);
       }
-    } catch (erro) {
-      console.error("Erro ao buscar fotos:", erro);
+    } catch (error) {
+      console.error("Erro ao buscar fotos:", error);
     } finally {
-      setCarregando(false);
+      setIsLoading(false);
     }
   }, [baseUrl]);
 
   useEffect(() => {
-    buscarFotos();
-  }, [buscarFotos]);
+    fetchPictures();
+  }, [fetchPictures]);
 
-  const formatarData = (dataISO) => {
-    const data = new Date(dataISO);
-    return data.toLocaleString("pt-BR");
-  };
+  function formatDateTime(isoDate) {
+    const date = new Date(isoDate);
+    return date.toLocaleString("pt-BR");
+  }
 
-  const obterDataFormatada = (dataISO) => {
-    return new Date(dataISO).toISOString().split("T")[0];
-  };
+  function extractDate(isoDate) {
+    return new Date(isoDate).toISOString().split("T")[0];
+  }
 
-  const fotosFiltradas = fotos.filter((foto) => {
-    if (!filtroData) return true;
-    return obterDataFormatada(foto.createdAt) === filtroData;
+  const filteredPictures = pictures.filter((picture) => {
+    if (!dateFilter) return true;
+    return extractDate(picture.createdAt) === dateFilter;
   });
 
   return (
@@ -56,7 +56,7 @@ export default function PainelAdmin() {
       <div className="admin-box">
         <h1>Painel Administrativo</h1>
 
-        {carregando ? (
+        {isLoading ? (
           <p>Carregando fotos...</p>
         ) : (
           <>
@@ -65,14 +65,14 @@ export default function PainelAdmin() {
                 Filtrar por dia:
                 <input
                   type="date"
-                  value={filtroData}
-                  onChange={(e) => setFiltroData(e.target.value)}
+                  value={dateFilter}
+                  onChange={(e) => setDateFilter(e.target.value)}
                 />
               </label>
             </div>
 
             <p className="total">
-              Total filtrado: <strong>{fotosFiltradas.length}</strong>
+              Total filtrado: <strong>{filteredPictures.length}</strong>
             </p>
 
             <div className="tabela-container">
@@ -85,19 +85,19 @@ export default function PainelAdmin() {
                   </tr>
                 </thead>
                 <tbody>
-                  {fotosFiltradas.map((foto) => (
-                    <tr key={foto.id}>
-                      <td>{foto.id}</td>
+                  {filteredPictures.map((picture) => (
+                    <tr key={picture.id}>
+                      <td>{picture.id}</td>
                       <td>
                         <a
-                          href={`${baseUrl}/download/${foto.id}`}
+                          href={`${baseUrl}/download/${picture.id}`}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
                           Baixar foto
                         </a>
                       </td>
-                      <td>{formatarData(foto.createdAt)}</td>
+                      <td>{formatDateTime(picture.createdAt)}</td>
                     </tr>
                   ))}
                 </tbody>

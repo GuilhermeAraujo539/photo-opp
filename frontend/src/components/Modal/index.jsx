@@ -1,7 +1,7 @@
 import React from "react";
 import "./style.css";
 
-export default function ModalObrigado({ onClose }) {
+export default function ThankYouModal({ onClose }) {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>

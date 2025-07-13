@@ -1,20 +1,18 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-
 import Logo from "../../components/Logo";
 import Button from "../../components/Button";
 import QRCodeBox from "../../components/QRCode";
 import usePicture from "../../hooks/usePicture";
-
 import "./style.css";
 
-export default function Agradecimento() {
+export default function Thanks() {
   const { qrCode } = usePicture();
   const navigate = useNavigate();
 
-  const voltarParaInicio = () => {
+  function handleFinish() {
     navigate("/");
-  };
+  }
 
   return (
     <div className="agradecimento-container">
@@ -34,7 +32,7 @@ export default function Agradecimento() {
       </main>
 
       <footer>
-        <Button variant="default" onClick={voltarParaInicio}>
+        <Button variant="default" onClick={handleFinish}>
           Finalizar
         </Button>
       </footer>
