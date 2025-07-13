@@ -1,4 +1,4 @@
-const PictureRepository = require("../Repositorys/pictureRepository")
+const PictureRepository = require("../repositorys/pictureRepository");
 
 class PictureService {
   static async createPicture({ picture }) {
@@ -14,6 +14,14 @@ class PictureService {
       qrCode: qrCodeBase64,
     };
   }
+
+  static async getPictureById(id) {
+    return PictureRepository.getPictureById(id);
+  }
+
+  static async listPictures({ startDate, endDate }) {
+    return PictureRepository.listPictures({ startDate, endDate });
+  }
 }
 
-module.exports = PictureService
+module.exports = PictureService;

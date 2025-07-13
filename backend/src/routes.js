@@ -10,9 +10,8 @@ const schema = z.object({
     .refine(val => val.trim() !== "", { message: "Imagem não pode ser vazia" }),
 });
 
-
-router.post('/postImage', validateBody(schema), PictureController.upload)
-router.get('/download/:id', PictureController.download)
-
+router.post('/postImage', validateBody(schema), PictureController.upload);
+router.get('/download/:id', PictureController.download);
+router.get('/pictures', PictureController.list); // nova rota para listar fotos
 
 module.exports = router;

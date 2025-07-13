@@ -6,7 +6,7 @@
   cursor: pointer;
   font-weight: bold;
   box-sizing: border-box;
-  margin-top: 2vh;
+  margin-top: 1vh;
   transition: background-color 0.2s ease;
 }
 .button--default {

@@ -1,11 +1,15 @@
 import React from "react";
 import "./style.css";
 
-export default function QRCodeBox() {
+export default function QRCodeBox({ qrCodeBase64 }) {
   return (
     <div className="qr-box">
       <span className="qr-title">Fazer download</span>
-      <div className="qr-code-placeholder">(QR CODE)</div>
+      {qrCodeBase64 ? (
+        <img src={qrCodeBase64} alt="QR Code" className="qr-code-img" />
+      ) : (
+        <div className="qr-code-placeholder">(QR CODE)</div>
+      )}
     </div>
   );
 }

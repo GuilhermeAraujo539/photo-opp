@@ -1,56 +1,64 @@
 import React, { useRef, useState, useEffect } from "react";
-import WebcamCapture from "../../components/Webcam/index.jsx";
-import Loader from "../../components/Loader/index.jsx";
-import { useCountdown } from "../../hooks/useCountdouwn.js";
 import { useNavigate } from "react-router-dom";
+
+import WebcamCapture from "../../components/Webcam";
+import Loader from "../../components/Loader";
+import usePicture from "../../hooks/usePicture";
+import { useCountdown } from "../../hooks/useCountdouwn";
+
 import "./style.css";
 
 export default function Camera() {
-  const [cameraReady, setCameraReady] = useState(false);
   const webcamRef = useRef(null);
-  const [countdown, startCountdown] = useCountdown(3);
+  const { setPicture } = usePicture();
   const navigate = useNavigate();
 
-  const handleCameraReady = () => {
-    setCameraReady(true);
-  };
+  const [cameraPronta, setCameraPronta] = useState(false);
+  const [contagem, iniciarContagem] = useCountdown(3);
 
-  const handleCapture = () => {
-    startCountdown();
+  const capturarImagem = () => {
+    const imagem = webcamRef.current?.capture();
+    if (imagem) {
+      setPicture(imagem);
+      navigate("/preview");
+    }
   };
 
   useEffect(() => {
-    if (countdown === 0) {
-      const image = webcamRef.current?.capture();
-      if (image) {
-        navigate("/preview", { state: { screenshot: image } });
-      }
+    if (contagem === 0) {
+      capturarImagem();
     }
-  }, [countdown, navigate]);
+  }, [contagem]);
+
+  const handleCameraPronta = () => setCameraPronta(true);
+  const handleCliqueCaptura = () => iniciarContagem();
+
+  const deveExibirBotao = cameraPronta && contagem === null;
+  const deveExibirContagem = contagem !== null;
 
   return (
     <div className="webcam-container">
       <WebcamCapture
         ref={webcamRef}
-        onReady={handleCameraReady}
-        className={cameraReady ? "fade-in" : ""}
+        onReady={handleCameraPronta}
+        className={cameraPronta ? "fade-in" : ""}
       />
 
-      {!cameraReady && (
+      {!cameraPronta && (
         <div className="overlay-loader">
           <Loader />
         </div>
       )}
 
-      {cameraReady && countdown === null && (
-        <button className="capture-button" onClick={handleCapture}>
-          <img src="/images/botao.png" alt="botao de captura" />
+      {deveExibirBotao && (
+        <button className="capture-button" onClick={handleCliqueCaptura}>
+          <img src="/images/botao.png" alt="Botão de captura" />
         </button>
       )}
 
-      {countdown !== null && (
+      {deveExibirContagem && (
         <div className="countdown-overlay">
-          <span>{countdown}</span>
+          <span>{contagem}</span>
         </div>
       )}
     </div>

@@ -7,23 +7,35 @@ import React, {
 import Webcam from "react-webcam";
 import "./style.css";
 
-const WebcamCapture = forwardRef(({ onReady }, ref) => {
-  const webcamRef = useRef(null);
-  const [videoReady, setVideoReady] = useState(false);
+const videoConstraints = {
+  width: 1280,
+  height: 720,
+  facingMode: "environment",
+};
 
-  const videoConstraints = {
-    width: 1280,
-    height: 720,
-    facingMode: "environment",
-  };
+const WebcamCapture = forwardRef(function WebcamCapture({ onReady }, ref) {
+  const webcamRef = useRef(null);
+  const [videoPronto, setVideoPronto] = useState(false);
 
   useImperativeHandle(ref, () => ({
-    capture: () => webcamRef.current?.getScreenshot() || null,
+    capture: capturarImagem,
   }));
 
-  const handleLoadedData = () => {
-    setVideoReady(true);
+  function capturarImagem() {
+    return webcamRef.current?.getScreenshot() || null;
+  }
+
+  function aoCarregarVideo() {
+    setVideoPronto(true);
     if (onReady) onReady();
+  }
+
+  const webcamStyle = {
+    width: "100vw",
+    height: "100vh",
+    objectFit: "cover",
+    opacity: videoPronto ? 1 : 0,
+    transition: "opacity 0.6s ease-in-out",
   };
 
   return (
@@ -33,14 +45,8 @@ const WebcamCapture = forwardRef(({ onReady }, ref) => {
         audio={false}
         screenshotFormat="image/jpeg"
         videoConstraints={videoConstraints}
-        onLoadedData={handleLoadedData}
-        style={{
-          width: "100vw",
-          height: "100vh",
-          objectFit: "cover",
-          opacity: videoReady ? 1 : 0,
-          transition: "opacity 0.6s ease-in-out",
-        }}
+        onLoadedData={aoCarregarVideo}
+        style={webcamStyle}
       />
     </div>
   );

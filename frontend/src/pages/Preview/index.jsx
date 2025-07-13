@@ -1,66 +1,75 @@
 import React, { useRef } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import html2canvas from "html2canvas";
+
 import Button from "../../components/Button";
-import PreviewFrame from "../../components/Frame/index.jsx";
-import { generatePreviewImage } from "../../utils/generatePreviewImage";
+import PreviewFrame from "../../components/Frame";
+import usePicture from "../../hooks/usePicture";
+
 import "./style.css";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export default function Preview() {
-  const location = useLocation();
+  const { picture, setQrCode, setPicture } = usePicture();
   const navigate = useNavigate();
-  const previewFrameRef = useRef(null);
+  const previewRef = useRef(null);
 
-  const screenshot = location.state?.screenshot;
-  if (!screenshot) {
+  if (!picture) {
     navigate("/", { replace: true });
     return null;
   }
 
-  async function sendPreviewToServer(dataUrl) {
+  const enviarImagemParaServidor = async (imagemBase64) => {
     try {
-      const response = await fetch(`${backendUrl}`, {
+      const response = await fetch(`${backendUrl}/postImage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ image: dataUrl }),
+        body: JSON.stringify({ picture: imagemBase64 }),
       });
 
       if (!response.ok) {
         throw new Error(`Erro no servidor: ${response.statusText}`);
       }
 
-      alert("Imagem enviada com sucesso!");
-      navigate("/");
-    } catch (error) {
-      console.error("Erro ao enviar imagem:", error);
+      const data = await response.json();
+      setQrCode(data.qrCode);
+      setPicture(imagemBase64);
+      navigate("/download");
+    } catch (erro) {
+      console.error("Erro ao enviar imagem:", erro);
       alert("Falha ao enviar imagem. Tente novamente.");
     }
-  }
+  };
 
-  async function handleContinue() {
-    if (!previewFrameRef.current) return;
-
-    const frameWidth = previewFrameRef.current.offsetWidth;
-    const frameHeight = previewFrameRef.current.offsetHeight;
+  const capturarImagemComoCanvas = async () => {
+    if (!previewRef.current) return;
 
     try {
-      const dataUrl = await generatePreviewImage(screenshot, frameWidth, frameHeight);
-      await sendPreviewToServer(dataUrl);
-    } catch (error) {
-      console.error(error);
-      alert(error.message || "Erro ao processar imagem.");
+      const canvas = await html2canvas(previewRef.current, {
+        useCORS: true,
+        backgroundColor: null,
+        scale: 2,
+      });
+
+      const imagemBase64 = canvas.toDataURL("image/png");
+      await enviarImagemParaServidor(imagemBase64);
+    } catch (erro) {
+      console.error("Erro ao processar imagem:", erro);
+      alert(erro.message || "Erro ao processar imagem.");
     }
-  }
+  };
 
   return (
     <div className="preview-container">
-      <PreviewFrame ref={previewFrameRef} screenshot={screenshot} />
+      <PreviewFrame ref={previewRef} screenshot={picture} />
+
       <div className="button-group">
         <Button variant="white" onClick={() => navigate(-1)}>
           Voltar
         </Button>
-        <Button variant="default" onClick={handleContinue}>
+
+        <Button variant="default" onClick={capturarImagemComoCanvas}>
           Continuar
         </Button>
       </div>
